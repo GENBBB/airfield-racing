@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %} Список гонок {% endblock %}
+{% block content %} 
+     <nav>
+  <ul class="topmenu">
+    <li><a style="color:white; background-color: #4caf50;" href="{%  url 'racing:main'%}">Главная</a></li>
+    <li><a href="" class="down">{{date}}</a>
+      <ul class="submenu">
+        {% for i in date_list %}
+        {% if i != date %}
+        <li><a href="{% url 'racing:index' i %} ">{{i}}</a></li>
+        {% endif %}
+        {% endfor %}  
+      </ul>
+    </li>
+    {% if top_race_list%}
+      {% for i in top_race_list %}
+      <li><a href="{% url 'racing:detail' i.id %}">{{i.race_title}}</a></li>
+      {% endfor %}
+    {% endif%}  
+  </ul>
+</nav>   
+<br>
+    {% if race_list %}
+        <table>
+        <thead>
+            <tr>
+                <th>Название Гонки</th>
+                <th>Количество Участников</th>
+                <th>Время Старта</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in race_list %}
+            <tr>
+                <td><a class="butt" href="{% url 'racing:detail' a.race.id %}">{{a.race.race_title}}</a></td>
+                <td>{{a.number_of_participant}}</td>
+                <td>{{a.race.race_date}}</td>
+            </tr>
+            {% endfor %}
+        <tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

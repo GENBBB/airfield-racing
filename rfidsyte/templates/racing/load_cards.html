@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %} Тест гонки {% endblock %}
+{% block content %} 
+
+    <form method="POST" action="{% url 'racing:load_cards' %}">
+        {% csrf_token %}
+        <button type="submit">Загрузка Карточки</button>
+    </form>
+{% endblock %}

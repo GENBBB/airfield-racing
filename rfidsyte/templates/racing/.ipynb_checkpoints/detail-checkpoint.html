@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %} {{race.race_title}} {% endblock %}
+{% block content %} 
+     <nav>
+  <ul class="topmenu">
+    <li><a style="color:white; background-color: #4caf50;"href="{%  url 'racing:main'%}">Главная</a></li>
+    {% if top_race_list%}
+      <li><a style="background-color: #09133c; left: -4px; position: relative;" href="{% url 'racing:detail' race.id %}">{{race.race_title}}</a></li>
+      {% for i in top_race_list %}
+      {% if i != race %}
+      <li><a href="{% url 'racing:detail' i.id %}">{{i.race_title}}</a></li>
+      {% endif %}
+      {% endfor %}
+    {% endif%}  
+  </ul>
+</nav>   
+
+
+<div class="ex7"><h1 class="ex7">{{race.race_title}}</h1></div>
+<div>Начало гонки: {{race.race_date}}</div>
+<div>Длительность гонки: {{race.race_time}}</div>
+<div>Количество участников: {{number_of_participant}}</div>
+<div>Состояние Гонки: {{race.race_condition}}</div> 
+
+<hr></hr>
+
+<table>
+    <thead>
+        <tr>
+            {% for k in header %}
+            <th>{{k}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rows %}
+            <tr>
+                {% for e in r %}
+                    <td>{{e}}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
