@@ -14,10 +14,7 @@ class RFID():
         self.race_id = race_id
         
     def card_time_list(self):
-        try:
-            a = Race.objects.get(id = self.race_id)
-        except:
-            print("Пытается создаться несуществующая гонка!")
+        a = Race.objects.get(id = self.race_id)
         participants = a.participant_set.all()
         card_time = []
         for i in participants:
@@ -34,7 +31,6 @@ class RFID():
         
         
     def race(self, r, card_time, cards):
-        print('Гонка началась!')
         r.race_condition = "Гонка Идет"
         r.save()
         self.sock.connect((self.host, self.port))
@@ -59,9 +55,7 @@ class RFID():
                             else:
                                 x = (i[2]+i[3])/2
                                 i[4] += x
-                                print(x)
                                 x_time = (datetime.datetime.min + x).time()
-                                print(x_time)
                                 a = i[0]
                                 if a.laps_time != None:
                                     a.laps_time += ' ' + x_time.strftime("%H:%M:%S")
@@ -115,9 +109,7 @@ class RFID():
                             if not(finish_first and i[6]):
                                 x = (i[2]+i[3])/2
                                 i[4] += x
-                                print(x)
                                 x_time = (datetime.datetime.min + x).time()
-                                print(x_time)
                                 a = i[0]
                                 if a.laps_time != None:
                                     a.laps_time += ' ' + x_time.strftime("%H:%M:%S")
@@ -128,13 +120,11 @@ class RFID():
                                 else:
                                     a.total_time = x_time
                                 a.save()
-                                print("Save")
                                 i[5] += 1
                                 if i[5] == max_circle+1:
                                     i[6] = True
                                     finish_first = True
                                     numbers_finish += 1
-                                    print(i[0].name, 'финишировал')
                                 i[2] = timezone.now()-start-i[4]
                                 i[3] = timezone.now()-start-i[4]
                         break
@@ -142,7 +132,6 @@ class RFID():
             if i[2] != 0:
                 x = (i[2]+i[3])/2
                 x_time = (datetime.datetime.min + x).time()
-                print(x_time)
                 a = i[0]
                 if a.laps_time != None:
                     a.laps_time += ' ' + x_time.strftime("%H:%M:%S")
@@ -158,18 +147,17 @@ class RFID():
         r.save()
         
     def start(self):
-        print('Поток запустился')
+        print('ada')
         card_time = RFID.card_time_list(self)
         a = Race.objects.get(id = self.race_id)
         delta = a.race_date-timezone.now()
-        print(delta.total_seconds())
         cards = []
         participants = a.participant_set.all()
         for i in participants:
             cards.append(i.rfid)
         cards.sort(reverse=True)
         print(cards)
-        t = Timer(1, RFID.race, [self, a, card_time, cards])
+        t = Timer(delta.total_seconds(), RFID.race, [self, a, card_time, cards])
         t.start()
         return
     
@@ -188,4 +176,3 @@ class RFID():
         self.sock.close()
         a.rfid = data
         a.save()
-        

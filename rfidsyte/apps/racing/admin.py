@@ -75,7 +75,6 @@ class RaceAdmin(admin.ModelAdmin):
         a.race_condition = "Гонка Запущена"
         a.save()
         b = RFID(a.id)
-        print('Запуск Потока')
         race = threading.Thread(target=b.start, args=(), daemon=False)
         race.start()
         return redirect(reverse('admin:racing_race_changelist'))

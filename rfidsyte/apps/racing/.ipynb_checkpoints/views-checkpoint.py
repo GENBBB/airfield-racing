@@ -16,8 +16,7 @@ def main(request):
     date_list = list(set(date_list))
     date_list.sort()
     date_list.reverse()
-    race_date = datetime.date.today()
-    print(date_list)
+    race_date = timezone.now().date()
     if date_list.count(race_date) == 0 and len(date_list) != 0:
         race_date = date_list[0]
     race_date = race_date.strftime('%Y-%m-%d')
@@ -36,7 +35,7 @@ def index(request, race_date):
     date_list = list(set(date_list))
     date_list.sort()
     date_list.reverse()
-    race_list = Race.objects.filter(race_date__gte=race_date).filter(race_date__lte=race_date+datetime.timedelta(days=1))
+    race_list = Race.objects.filter(race_date__date=race_date)
     table_race =[]
     class line_table():
         def __init__(self, count, race):
@@ -52,7 +51,11 @@ def detail(request, race_id):
         a = Race.objects.get(id = race_id)
     except:
         Http404("Гонка не найдена")
-    race_list = Race.objects.filter(race_date__gte=a.race_date.date()).filter(race_date__lte=a.race_date.date()+datetime.timedelta(days=1))
+    race_list = Race.objects.filter(
+                                    race_date__gte=a.race_date
+                           ).filter(
+                                    race_date__lte=a.race_date+datetime.timedelta(days=1)
+                           )
     race_list = race_list[:5]
     all_participant = a.participant_set.all()
     header = ['Имя участника', 'Общее время']
